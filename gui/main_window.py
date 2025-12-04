@@ -14,7 +14,7 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("RL Training GUI (PyQt, OOP)")
+        self.setWindowTitle("RL - РГР")
         self.setGeometry(200, 200, 400, 350)
 
         layout = QVBoxLayout()

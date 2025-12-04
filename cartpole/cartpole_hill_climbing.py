@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import numpy as np
 from env.env_utils import evaluate_policy
 
