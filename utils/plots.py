@@ -8,3 +8,4 @@ def plot_rewards(rewards, title):
     plt.ylabel("Reward")
     plt.grid()
     plt.show()
+    
