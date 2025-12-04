@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QPushButton,
-    QLineEdit, QHBoxLayout, QGroupBox
+    QLineEdit, QHBoxLayout, QGroupBox, QApplication
 )
 from PyQt5.QtCore import Qt
 
 from cartpole.cartpole_hill_climbing import train_hill_climbing
 from cartpole.cartpole_policy_gradient import train_policy_gradient
 from mountaincar.mountaincar_policy_gradient import train_mountaincar
+
 from utils.plots import plot_rewards
 
 
@@ -69,12 +70,29 @@ class MainWindow(QWidget):
         self.mc_box = QGroupBox("MountainCar Policy Gradient")
         mc_layout = QVBoxLayout()
 
+        mc_ep_row = QHBoxLayout()
+        mc_ep_row.addWidget(QLabel("Episodes:"))
+        self.mc_episodes = QLineEdit("5000")
+        mc_ep_row.addWidget(self.mc_episodes)
+        mc_layout.addLayout(mc_ep_row)
+
+        mc_lr_row = QHBoxLayout()
+        mc_lr_row.addWidget(QLabel("Learning rate:"))
+        self.mc_lr = QLineEdit("0.02")
+        mc_lr_row.addWidget(self.mc_lr)
+        mc_layout.addLayout(mc_lr_row)
+
         btn3 = QPushButton("Run MountainCar PG")
         btn3.clicked.connect(self.run_mountaincar)
         mc_layout.addWidget(btn3)
 
         self.mc_box.setLayout(mc_layout)
         layout.addWidget(self.mc_box)
+
+        # --- Status label ---
+        self.status_label = QLabel("")
+        self.status_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.status_label)
 
         # Set main layout
         self.setLayout(layout)
@@ -96,5 +114,13 @@ class MainWindow(QWidget):
         plot_rewards(rewards, f"Policy Gradient (CartPole)")
 
     def run_mountaincar(self):
-        _, rewards = train_mountaincar()
+        episodes = int(self.mc_episodes.text())
+        lr = float(self.mc_lr.text())
+
+        self.status_label.setText("Training MountainCar PG...")
+        QApplication.processEvents()
+
+        policy, rewards = train_mountaincar(episodes=episodes, lr=lr)
+
+        self.status_label.setText("Training finished!")
         plot_rewards(rewards, "MountainCar Policy Gradient")
